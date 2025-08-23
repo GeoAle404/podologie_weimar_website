@@ -42,6 +42,13 @@
 
     <header class="header">
         <nav class="nav" role="navigation" aria-label="Hauptnavigation">
+            <div class="nav__brand">
+                <img src="images/logo.png" alt="Podologie Weimar Logo" class="nav__logo">
+                <div class="nav__brand-text">
+                    <h1 class="nav__title">Podologie Weimar</h1>
+                    <p class="nav__subtitle">Larisa & Vitalij Alekseev</p>
+                </div>
+            </div>
             <ul class="nav__list" role="tablist">
                 <li class="nav__item" role="none">
                     <a href="#ueber-uns" class="nav__link nav__link--active" role="tab" aria-selected="true"
@@ -260,45 +267,45 @@
         </section>
 
         <section id="kontakt" class="tab-content" role="tabpanel" aria-labelledby="tab-kontakt" aria-hidden="true">
-                <h1 class="tab-content__title">Kontakt</h1>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <h3 class="contact-item__title">Adresse</h3>
-                        <address class="contact-item__text">
-                            Ernst-Thälmann-Straße 75<br>
-                            99423 Weimar
-                        </address>
-                    </div>
-
-                    <div class="contact-item">
-                        <h3 class="contact-item__title">Telefon</h3>
-                        <p class="contact-item__text"><strong>Praxis:</strong> <a href="tel:036432123313"
-                                class="contact-item__link" aria-label="Praxis anrufen: 03643 2123313">03643 2123313</a>
-                        </p>
-                    </div>
-
-                    <div class="contact-item">
-                        <h3 class="contact-item__title">Mobil</h3>
-                        <p class="contact-item__text"><strong>Larisa:</strong> <a href="tel:01774532020"
-                                class="contact-item__link" aria-label="Larisa mobil anrufen: 0177 453 2020">0177 453
-                                2020</a></p>
-                        <p class="contact-item__text"><strong>Vitalij:</strong> <a href="tel:015202317568"
-                                class="contact-item__link" aria-label="Vitalij mobil anrufen: 0152 023 17568">0152 023
-                                17568</a></p>
-                    </div>
+            <h1 class="tab-content__title">Kontakt</h1>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h3 class="contact-item__title">Adresse</h3>
+                    <address class="contact-item__text">
+                        Ernst-Thälmann-Straße 75<br>
+                        99423 Weimar
+                    </address>
                 </div>
 
-                <div class="location-section">
-                    <h2 class="location-section__title">Standort</h2>
-                    <div class="location-section__map-container">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2511.3860309436222!2d11.31903697654302!3d50.99053827170038!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a41aeb476cad1d%3A0xa0c8af2d5ec80141!2sErnst-Th%C3%A4lmann-Stra%C3%9Fe%2075%2C%2099423%20Weimar!5e0!3m2!1sen!2sde!4v1755967957216!5m2!1sen!2sde"
-                            class="location-section__map" title="Standort der Podologie Praxis auf Google Maps"
-                            aria-label="Interaktive Karte mit Standort Ernst-Thälmann-Straße 75, 99423 Weimar"
-                            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
+                <div class="contact-item">
+                    <h3 class="contact-item__title">Telefon</h3>
+                    <p class="contact-item__text"><strong>Praxis:</strong> <a href="tel:036432123313"
+                            class="contact-item__link" aria-label="Praxis anrufen: 03643 2123313">03643 2123313</a>
+                    </p>
                 </div>
-            </section>
+
+                <div class="contact-item">
+                    <h3 class="contact-item__title">Mobil</h3>
+                    <p class="contact-item__text"><strong>Larisa:</strong> <a href="tel:01774532020"
+                            class="contact-item__link" aria-label="Larisa mobil anrufen: 0177 453 2020">0177 453
+                            2020</a></p>
+                    <p class="contact-item__text"><strong>Vitalij:</strong> <a href="tel:015202317568"
+                            class="contact-item__link" aria-label="Vitalij mobil anrufen: 0152 023 17568">0152 023
+                            17568</a></p>
+                </div>
+            </div>
+
+            <div class="location-section">
+                <h2 class="location-section__title">Standort</h2>
+                <div class="location-section__map-container">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2511.3860309436222!2d11.31903697654302!3d50.99053827170038!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47a41aeb476cad1d%3A0xa0c8af2d5ec80141!2sErnst-Th%C3%A4lmann-Stra%C3%9Fe%2075%2C%2099423%20Weimar!5e0!3m2!1sen!2sde!4v1755967957216!5m2!1sen!2sde"
+                        class="location-section__map" title="Standort der Podologie Praxis auf Google Maps"
+                        aria-label="Interaktive Karte mit Standort Ernst-Thälmann-Straße 75, 99423 Weimar"
+                        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer class="footer" role="contentinfo">
@@ -334,7 +341,8 @@
 
                 <section class="impressum-section">
                     <p class="impressum-section__text"><strong>Umsatzsteuer-ID</strong></p>
-                    <p class="impressum-section__text">Umsatzsteuer-Identifikationsnummer gem. § 27 a Umsatzsteuergesetz:<br>
+                    <p class="impressum-section__text">Umsatzsteuer-Identifikationsnummer gem. § 27 a
+                        Umsatzsteuergesetz:<br>
                         DE XXX XXX XXX</p>
                 </section>
 
