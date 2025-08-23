@@ -196,6 +196,10 @@ body {
     text-align: justify;
 }
 
+.about-section p {
+    margin-bottom: 1.8rem;
+}
+
 .intro-paragraph {
     font-size: 1.2rem;
     font-weight: 500;
@@ -334,6 +338,14 @@ body {
     box-shadow: var(--shadow-medium);
 }
 
+.location-description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin: 2rem 0;
+    color: var(--text-medium);
+    text-align: justify;
+}
+
 .location-section__map {
     width: 100%;
     height: 450px;
@@ -358,6 +370,22 @@ body {
     overflow: hidden;
 }
 
+/* Special styling for vertical images in Hausbesuche section */
+.about-section:last-child .carousel-container {
+    max-width: 400px;
+}
+
+.about-section:last-child .carousel-wrapper {
+    height: 500px;
+}
+
+.about-section:last-child .carousel-slide__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
 .carousel-slide {
     position: absolute;
     top: 0;
@@ -366,10 +394,12 @@ body {
     height: 100%;
     opacity: 0;
     transition: opacity var(--transition-smooth);
+    z-index: 1;
 }
 
 .carousel-slide--active {
     opacity: 1;
+    z-index: 2;
 }
 
 .carousel-slide__image {
@@ -649,6 +679,15 @@ body {
         height: 250px;
     }
 
+    /* Hausbesuche vertical images on mobile */
+    .about-section:last-child .carousel-container {
+        max-width: 280px;
+    }
+
+    .about-section:last-child .carousel-wrapper {
+        height: 400px;
+    }
+
     .carousel-nav {
         width: 35px;
         height: 35px;
@@ -706,6 +745,15 @@ body {
 
     .carousel-wrapper {
         height: 200px;
+    }
+
+    /* Hausbesuche vertical images on small mobile */
+    .about-section:last-child .carousel-container {
+        max-width: 240px;
+    }
+
+    .about-section:last-child .carousel-wrapper {
+        height: 350px;
     }
 
     .highlight-text,

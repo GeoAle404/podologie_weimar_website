@@ -5,13 +5,171 @@
 
 'use strict';
 
-// App initialization
-class PodologieApp {
-    constructor() {
+// Unified Carousel Component
+class UnifiedCarousel {
+    constructor(containerSelector, autoSlideDelay = 4000) {
+        this.container = document.querySelector(containerSelector);
+        if (!this.container) return;
+
         this.currentSlideIndex = 0;
         this.slides = [];
         this.dots = [];
         this.autoSlideInterval = null;
+        this.autoSlideDelay = autoSlideDelay;
+        this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        this.containerSelector = containerSelector;
+
+        this.init();
+    }
+
+    init() {
+        this.waitForDOM(() => {
+            this.initCarousel();
+            this.startAutoSlide();
+        });
+    }
+
+    waitForDOM(callback) {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', callback);
+        } else {
+            callback();
+        }
+    }
+
+    initCarousel() {
+        try {
+            this.slides = Array.from(this.container.querySelectorAll('.carousel-slide'));
+            this.dots = Array.from(this.container.querySelectorAll('.carousel-dot'));
+
+            if (this.slides.length === 0) {
+                console.info(`No carousel slides found in ${this.containerSelector}`);
+                return;
+            }
+
+            // Set up navigation buttons
+            const prevBtn = this.container.querySelector('.carousel-nav--prev');
+            const nextBtn = this.container.querySelector('.carousel-nav--next');
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => this.prevSlide());
+                prevBtn.setAttribute('aria-label', 'Vorheriges Bild');
+            }
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => this.nextSlide());
+                nextBtn.setAttribute('aria-label', 'Nächstes Bild');
+            }
+
+            // Set up dot navigation
+            this.dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => this.goToSlide(index));
+                dot.setAttribute('aria-label', `Zu Bild ${index + 1} wechseln`);
+            });
+
+            // Set up mouse interactions for auto-slide
+            this.container.addEventListener('mouseenter', () => this.pauseAutoSlide());
+            this.container.addEventListener('mouseleave', () => this.resumeAutoSlide());
+
+            // Initialize first slide
+            this.showSlide(0);
+
+            console.info(`Carousel initialized: ${this.containerSelector} with ${this.slides.length} slides`);
+        } catch (error) {
+            console.error('Error initializing carousel:', error);
+        }
+    }
+
+    showSlide(index, announceChange = false) {
+        try {
+            if (index < 0 || index >= this.slides.length) return;
+
+            // Remove active classes
+            this.slides.forEach((slide) => {
+                slide.classList.remove('carousel-slide--active');
+                slide.setAttribute('aria-hidden', 'true');
+            });
+
+            this.dots.forEach((dot) => {
+                dot.classList.remove('carousel-dot--active');
+                dot.setAttribute('aria-selected', 'false');
+            });
+
+            // Add active classes
+            this.slides[index].classList.add('carousel-slide--active');
+            this.slides[index].setAttribute('aria-hidden', 'false');
+
+            if (this.dots[index]) {
+                this.dots[index].classList.add('carousel-dot--active');
+                this.dots[index].setAttribute('aria-selected', 'true');
+            }
+
+            this.currentSlideIndex = index;
+
+            if (announceChange) {
+                this.announceSlideChange(index);
+            }
+        } catch (error) {
+            console.error('Error showing slide:', error);
+        }
+    }
+
+    nextSlide() {
+        const nextIndex = (this.currentSlideIndex + 1) % this.slides.length;
+        this.showSlide(nextIndex, true);
+    }
+
+    prevSlide() {
+        const prevIndex = (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
+        this.showSlide(prevIndex, true);
+    }
+
+    goToSlide(index) {
+        this.showSlide(index, true);
+        this.resetAutoSlide();
+    }
+
+    startAutoSlide() {
+        if (this.isReducedMotion || this.slides.length <= 1) return;
+
+        this.autoSlideInterval = setInterval(() => {
+            this.nextSlide();
+        }, this.autoSlideDelay);
+    }
+
+    pauseAutoSlide() {
+        if (this.autoSlideInterval) {
+            clearInterval(this.autoSlideInterval);
+            this.autoSlideInterval = null;
+        }
+    }
+
+    resumeAutoSlide() {
+        if (!this.isReducedMotion && this.slides.length > 1) {
+            this.startAutoSlide();
+        }
+    }
+
+    resetAutoSlide() {
+        this.pauseAutoSlide();
+        this.resumeAutoSlide();
+    }
+
+    announceSlideChange(index) {
+        const announcement = document.createElement('div');
+        announcement.setAttribute('aria-live', 'polite');
+        announcement.setAttribute('aria-atomic', 'true');
+        announcement.className = 'sr-only';
+        announcement.textContent = `Bild ${index + 1} von ${this.slides.length}`;
+
+        document.body.appendChild(announcement);
+        setTimeout(() => document.body.removeChild(announcement), 1000);
+    }
+}
+
+// App initialization
+class PodologieApp {
+    constructor() {
+        this.carousels = [];
         this.isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         // Bind methods to maintain context
@@ -25,12 +183,26 @@ class PodologieApp {
     // Initialize the application
     init() {
         this.waitForDOM(() => {
-            this.initCarousel();
+            this.initCarousels();
             this.initTabNavigation();
             this.initModal();
             this.initAccessibility();
             this.initEventListeners();
             this.preloadImages();
+        });
+    }
+
+    // Initialize all carousels
+    initCarousels() {
+        // Find all carousel containers and initialize them
+        const carouselContainers = document.querySelectorAll('.carousel-container');
+        carouselContainers.forEach((container, index) => {
+            // Add unique ID to each container for reliable targeting
+            const carouselId = `carousel-${index + 1}`;
+            container.id = carouselId;
+
+            const carousel = new UnifiedCarousel(`#${carouselId}`, 4000);
+            this.carousels.push(carousel);
         });
     }
 
@@ -54,154 +226,6 @@ class PodologieApp {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
-    }
-
-    // Initialize image carousel
-    initCarousel() {
-        try {
-            this.slides = Array.from(document.querySelectorAll('.carousel-slide'));
-            this.dots = Array.from(document.querySelectorAll('.carousel-dot'));
-
-            if (this.slides.length === 0) {
-                console.info('No carousel slides found');
-                return;
-            }
-
-            // Add ARIA labels to carousel controls
-            const prevBtn = document.querySelector('.carousel-nav--prev');
-            const nextBtn = document.querySelector('.carousel-nav--next');
-
-            if (prevBtn) {
-                prevBtn.setAttribute('aria-label', 'Vorheriges Bild');
-                prevBtn.setAttribute('title', 'Vorheriges Bild');
-            }
-            if (nextBtn) {
-                nextBtn.setAttribute('aria-label', 'Nächstes Bild');
-                nextBtn.setAttribute('title', 'Nächstes Bild');
-            }
-
-            // Add ARIA labels to dots
-            this.dots.forEach((dot, index) => {
-                dot.setAttribute('aria-label', `Zu Bild ${index + 1} wechseln`);
-                dot.setAttribute('title', `Bild ${index + 1}`);
-            });
-
-            // Set up carousel container ARIA
-            const carouselContainer = document.querySelector('.carousel-container');
-            if (carouselContainer) {
-                carouselContainer.setAttribute('role', 'region');
-                carouselContainer.setAttribute('aria-label', 'Bildergalerie der Praxis');
-            }
-
-            // Initialize first slide
-            this.showSlide(0);
-
-            // Auto-advance slides (only if user doesn't prefer reduced motion)
-            if (!this.isReducedMotion) {
-                this.startAutoSlide();
-            }
-
-            console.info(`Carousel initialized with ${this.slides.length} slides`);
-        } catch (error) {
-            console.error('Error initializing carousel:', error);
-        }
-    }
-
-    // Show specific slide
-    showSlide(index, announceChange = false) {
-        try {
-            if (index < 0 || index >= this.slides.length) {
-                console.warn(`Invalid slide index: ${index}`);
-                return;
-            }
-
-            // Update slides
-            this.slides.forEach((slide, i) => {
-                const isActive = i === index;
-                slide.classList.toggle('carousel-slide--active', isActive);
-                slide.setAttribute('aria-hidden', !isActive);
-            });
-
-            // Update dots
-            this.dots.forEach((dot, i) => {
-                const isActive = i === index;
-                dot.classList.toggle('carousel-dot--active', isActive);
-                dot.setAttribute('aria-pressed', isActive);
-            });
-
-            this.currentSlideIndex = index;
-
-            // Announce slide change to screen readers
-            if (announceChange) {
-                this.announceSlideChange(index);
-            }
-        } catch (error) {
-            console.error('Error showing slide:', error);
-        }
-    }
-
-    // Navigate to next slide
-    nextSlide() {
-        const nextIndex = (this.currentSlideIndex + 1) % this.slides.length;
-        this.showSlide(nextIndex, true);
-        this.resetAutoSlide();
-    }
-
-    // Navigate to previous slide
-    prevSlide() {
-        const prevIndex = (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
-        this.showSlide(prevIndex, true);
-        this.resetAutoSlide();
-    }
-
-    // Navigate to specific slide (1-indexed for user interface)
-    currentSlide(slideNumber) {
-        if (slideNumber < 1 || slideNumber > this.slides.length) {
-            console.warn(`Invalid slide number: ${slideNumber}`);
-            return;
-        }
-        this.showSlide(slideNumber - 1, true);
-        this.resetAutoSlide();
-    }
-
-    // Start auto-advancing slides
-    startAutoSlide() {
-        if (this.isReducedMotion) return;
-
-        this.autoSlideInterval = setInterval(() => {
-            this.nextSlide();
-        }, 5000);
-    }
-
-    // Reset auto-slide timer
-    resetAutoSlide() {
-        if (this.autoSlideInterval) {
-            clearInterval(this.autoSlideInterval);
-            this.startAutoSlide();
-        }
-    }
-
-    // Stop auto-slide
-    stopAutoSlide() {
-        if (this.autoSlideInterval) {
-            clearInterval(this.autoSlideInterval);
-            this.autoSlideInterval = null;
-        }
-    }
-
-    // Announce slide change to screen readers
-    announceSlideChange(index) {
-        const announcement = document.createElement('div');
-        announcement.setAttribute('aria-live', 'polite');
-        announcement.setAttribute('aria-atomic', 'true');
-        announcement.className = 'sr-only';
-        announcement.textContent = `Bild ${index + 1} von ${this.slides.length}`;
-
-        document.body.appendChild(announcement);
-
-        setTimeout(() => {
-            document.body.removeChild(announcement);
-        }, 1000);
     }
 
     // Initialize tab navigation
@@ -468,7 +492,8 @@ class PodologieApp {
         if (this.isReducedMotion) {
             document.documentElement.style.setProperty('--transition-fast', '0.01ms');
             document.documentElement.style.setProperty('--transition-smooth', '0.01ms');
-            this.stopAutoSlide();
+            // Pause all carousels auto-slide
+            this.carousels.forEach(carousel => carousel.pauseAutoSlide());
         }
 
         // Listen for changes in motion preference
@@ -488,28 +513,17 @@ class PodologieApp {
             // Window resize handler
             window.addEventListener('resize', this.handleResize);
 
-            // Page visibility change (pause/resume auto-slide)
+
+            // Handle page visibility change (pause/resume auto-slide for all carousels)
             document.addEventListener('visibilitychange', () => {
-                if (document.hidden) {
-                    this.stopAutoSlide();
-                } else if (!this.isReducedMotion) {
-                    this.startAutoSlide();
-                }
-            });
-
-            // Handle carousel mouse interactions
-            const carouselContainer = document.querySelector('.carousel-container');
-            if (carouselContainer) {
-                carouselContainer.addEventListener('mouseenter', () => {
-                    this.stopAutoSlide();
-                });
-
-                carouselContainer.addEventListener('mouseleave', () => {
-                    if (!this.isReducedMotion) {
-                        this.startAutoSlide();
+                this.carousels.forEach(carousel => {
+                    if (document.hidden) {
+                        carousel.pauseAutoSlide();
+                    } else {
+                        carousel.resumeAutoSlide();
                     }
                 });
-            }
+            });
 
             console.info('Event listeners initialized');
         } catch (error) {
@@ -531,16 +545,23 @@ class PodologieApp {
         }
 
         // Carousel keyboard navigation (only when carousel is focused)
-        if (target.closest('.carousel-container')) {
-            switch (key) {
-                case 'ArrowLeft':
-                    event.preventDefault();
-                    this.prevSlide();
-                    break;
-                case 'ArrowRight':
-                    event.preventDefault();
-                    this.nextSlide();
-                    break;
+        const carouselContainer = target.closest('.carousel-container');
+        if (carouselContainer) {
+            // Find which carousel this container belongs to
+            const carouselIndex = Array.from(document.querySelectorAll('.carousel-container')).indexOf(carouselContainer);
+            const carousel = this.carousels[carouselIndex];
+
+            if (carousel) {
+                switch (key) {
+                    case 'ArrowLeft':
+                        event.preventDefault();
+                        carousel.prevSlide();
+                        break;
+                    case 'ArrowRight':
+                        event.preventDefault();
+                        carousel.nextSlide();
+                        break;
+                }
             }
         }
     }
@@ -585,23 +606,8 @@ class PodologieApp {
     }
 }
 
-// Global functions for backwards compatibility with inline event handlers
-let app;
-
-function nextSlide() {
-    if (app) app.nextSlide();
-}
-
-function prevSlide() {
-    if (app) app.prevSlide();
-}
-
-function currentSlide(slideNumber) {
-    if (app) app.currentSlide(slideNumber);
-}
-
 // Initialize application
-app = new PodologieApp();
+const app = new PodologieApp();
 
 // Service Worker Registration (if available)
 if ('serviceWorker' in navigator) {
