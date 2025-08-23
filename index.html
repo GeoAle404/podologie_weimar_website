@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podologie Weimar - Larisa & Vitalij Alekseev</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: #DBF3FA;
+            color: #333;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-list li a {
+            color: #333;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-list li a:hover {
+            background-color: #B8E3F0;
+        }
+
+        .nav-list li a.active {
+            background-color: #A3D5E8;
+            color: #2c5aa0;
+            font-weight: 500;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h1 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+        }
+
+        .content-placeholder {
+            background-color: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            padding: 3rem;
+            text-align: center;
+            color: #6c757d;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-item {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #DBF3FA;
+        }
+
+        .contact-item h3 {
+            color: #2c5aa0;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-item p {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .contact-item a {
+            color: #2c5aa0;
+            text-decoration: none;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        .services-content {
+            max-width: 800px;
+        }
+
+        .intro-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            color: #555;
+        }
+
+        .services-list {
+            margin: 2rem 0;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #DBF3FA;
+        }
+
+        .checkmark {
+            color: #28a745;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .service-item strong {
+            color: #2c5aa0;
+        }
+
+        .closing-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #DBF3FA;
+            border-radius: 8px;
+            color: #2c5aa0;
+            font-weight: 500;
+        }
+
+        .about-content {
+            max-width: 800px;
+        }
+
+        .about-section {
+            margin-bottom: 3rem;
+        }
+
+        .about-section h2 {
+            color: #2c5aa0;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #DBF3FA;
+            padding-bottom: 0.5rem;
+        }
+
+        .about-section p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 1.2rem;
+            color: #444;
+            text-align: justify;
+        }
+
+        .intro-paragraph {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #2c5aa0;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-text {
+            background-color: #DBF3FA;
+            padding: 1.2rem;
+            border-radius: 8px;
+            border-left: 4px solid #A3D5E8;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeInModal 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 2% auto;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            background-color: #DBF3FA;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #A3D5E8;
+        }
+
+        .modal-header h2 {
+            color: #2c5aa0;
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .close {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c5aa0;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .close:hover {
+            background-color: #A3D5E8;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .impressum-section {
+            margin-bottom: 2rem;
+        }
+
+        .impressum-section h3 {
+            color: #2c5aa0;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #DBF3FA;
+            padding-bottom: 0.5rem;
+        }
+
+        .impressum-section h4 {
+            color: #2c5aa0;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+
+        .impressum-section p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #444;
+        }
+
+        @keyframes fadeInModal {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            padding: 2rem 0;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .impressum-link {
+            color: #2c5aa0;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .impressum-link:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .nav-list {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .tab-content h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="nav-list">
+                <li><a href="#ueber-uns" class="nav-link active">Über uns</a></li>
+                <li><a href="#leistungen" class="nav-link">Leistungen</a></li>
+                <li><a href="#kontakt" class="nav-link">Kontakt</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="ueber-uns" class="tab-content active">
+            <h1>Über uns</h1>
+            <div class="about-content">
+                <section class="about-section">
+                    <p class="intro-paragraph">
+                        Herzlich willkommen bei der podologischen Praxis von Larisa und Vitalij Alekseev! Wir sind eine
+                        familiengeführte Praxis in der Ernst-Thälmann-Straße 75, die sich seit vielen Jahren auf die
+                        medizinische Fußpflege spezialisiert hat. Unsere Praxis steht für höchste Qualität, fachkundige
+                        Beratung und individuell abgestimmte Behandlungen.
+                    </p>
+
+                    <p>
+                        Wir sind erfahrene und qualifizierte Podologen, die sich kontinuierlich fortbilden, um Ihnen
+                        stets die neuesten und effektivsten Behandlungsmethoden anbieten zu können. Wir nehmen uns Zeit
+                        für Sie und gehen auf Ihre persönlichen Bedürfnisse und Beschwerden ein. Unser Ziel ist es, Ihre
+                        Fußgesundheit nachhaltig zu verbessern und Ihnen ein schmerzfreies Gehen zu ermöglichen.
+                    </p>
+
+                    <p>
+                        In unserer modernen und einladenden Praxis legen wir großen Wert auf Hygiene und eine angenehme
+                        Atmosphäre. Wir bieten Ihnen ein umfassendes Leistungsspektrum, das von der medizinischen
+                        Fußpflege über die Diabetiker-Fußbehandlung bis hin zur Nagelkorrektur und Orthonyxie reicht.
+                    </p>
+
+                    <p class="highlight-text">
+                        Wir arbeiten mit allen Krankenkassen zusammen und sind stolz darauf, unseren Kunden nicht nur
+                        professionelle podologische Leistungen, sondern auch eine persönliche und herzliche Betreuung zu
+                        bieten. Wir freuen uns darauf, Sie in unserer Praxis begrüßen zu dürfen.
+                    </p>
+                </section>
+
+                <section class="about-section">
+                    <h2>Unsere Praxis</h2>
+                    <p>
+                        Unsere Praxis befindet sich in der Ernst-Thälmann-Straße 75, Weimar, nur wenige Gehminuten vom
+                        Hauptbahnhof entfernt. Die zentrale Lage ermöglicht eine hervorragende Verkehrsanbindung sowohl
+                        mit öffentlichen Verkehrsmitteln als auch mit dem eigenen Auto. Es besteht eine nahegelegene
+                        Bushaltestelle, und für unsere Kunden stehen private Parkplätze im Hof zur Verfügung.
+                    </p>
+
+                    <p>
+                        Die Räumlichkeiten unserer Praxis sind modern und ansprechend gestaltet, um Ihnen ein angenehmes
+                        und entspannendes Ambiente zu bieten. Besonderen Wert legen wir auf Hygiene und Sauberkeit in
+                        unseren Praxisräumen. Alle Behandlungsräume sind mit modernen, hygienischen Geräten
+                        ausgestattet. Die hellen und freundlichen Räumlichkeiten bereiten Ihnen ein ansprechendes
+                        Umfeld.
+                    </p>
+
+                    <p>
+                        Wir hoffen, dass Sie sich in diesem Umfeld rundum gut aufgehoben fühlen werden.
+                    </p>
+                </section>
+
+                <section class="about-section">
+                    <h2>Hausbesuche</h2>
+                    <p>
+                        Gerne führen wir Hausbesuche auf ärztliche Verordnung durch. Wir bringen die notwendige
+                        Ausrüstung mit, um Ihnen eine professionelle und hygienische Behandlung in Ihrer vertrauten
+                        Umgebung zu ermöglichen.
+                    </p>
+
+                    <p>
+                        Mit dieser Dienstleistung möchten wir unseren Kunden entgegenkommen und ihnen den Zugang zu
+                        unseren podologischen Leistungen erleichtern, auch wenn ein Praxisbesuch für sie nicht möglich
+                        ist. Wir sind überzeugt, dass eine gute Fußgesundheit für jeden erreichbar sein sollte, und
+                        freuen uns darauf, Ihnen auch im Rahmen unserer Hausbesuche zu helfen.
+                    </p>
+                </section>
+            </div>
+        </div>
+
+        <div id="leistungen" class="tab-content">
+            <h1>Leistungen</h1>
+            <div class="services-content">
+                <p class="intro-text">
+                    In unserer podologischen Praxis bieten wir Ihnen ein umfassendes Spektrum an Leistungen zur
+                    Förderung Ihrer Fußgesundheit. Wir sind bestrebt, Ihnen individuell angepasste und professionelle
+                    Behandlungen zu bieten. Hier finden Sie eine Übersicht unserer Leistungen:
+                </p>
+
+                <div class="services-list">
+                    <div class="service-item">
+                        <span class="checkmark">✔</span>
+                        <div>
+                            <strong>Medizinische Fußpflege</strong>: Professionelle Behandlung von Hornhaut,
+                            Hühneraugen, Schwielen sowie fachgerechtes Kürzen und Formen der Nägel.
+                        </div>
+                    </div>
+
+                    <div class="service-item">
+                        <span class="checkmark">✔</span>
+                        <div>
+                            <strong>Diabetiker-Fußbehandlung</strong>: Spezielle Fußpflege für Diabetiker, um die
+                            Entstehung von Fußproblemen und Komplikationen zu verhindern oder zu behandeln.
+                        </div>
+                    </div>
+
+                    <div class="service-item">
+                        <span class="checkmark">✔</span>
+                        <div>
+                            <strong>Nagelkorrektur</strong>: Behandlung von eingewachsenen, verdickten oder deformierten
+                            Nägeln, um Schmerzen und weitere Komplikationen zu vermeiden.
+                        </div>
+                    </div>
+
+                    <div class="service-item">
+                        <span class="checkmark">✔</span>
+                        <div>
+                            <strong>Orthonyxie</strong>: Anwendung von individuell angepassten Nagelspangen zur
+                            Korrektur von eingewachsenen oder deformierten Nägeln und zur Linderung von Beschwerden.
+                        </div>
+                    </div>
+
+                    <div class="service-item">
+                        <span class="checkmark">✔</span>
+                        <div>
+                            <strong>Druckentlastung</strong>: Anfertigung von individuellen Polsterungen oder Orthesen
+                            zur Druckentlastung bei Schwielen, Hühneraugen oder Druckstellen.
+                        </div>
+                    </div>
+
+                    <div class="service-item">
+                        <span class="checkmark">✔</span>
+                        <div>
+                            <strong>Eincremen der Füße</strong>: Nach der Behandlung werden Ihre Füße sorgfältig
+                            eingecremt, um die Haut geschmeidig und gepflegt zu halten.
+                        </div>
+                    </div>
+
+                    <div class="service-item">
+                        <span class="checkmark">✔</span>
+                        <div>
+                            <strong>Beratung</strong>: Fachkundige Beratung zu Fußgesundheit, Schuhwahl und Pflege, um
+                            Ihnen dabei zu helfen, Ihre Füße langfristig gesund und schmerzfrei zu erhalten.
+                        </div>
+                    </div>
+
+                    <div class="service-item">
+                        <span class="checkmark">✔</span>
+                        <div>
+                            <strong>Hausbesuche</strong>: Professionelle podologische Behandlungen bei Ihnen zu Hause
+                            auf ärztliche Verordnung, um Ihnen den Zugang zu unseren Leistungen auch bei eingeschränkter
+                            Mobilität zu ermöglichen.
+                        </div>
+                    </div>
+                </div>
+
+                <p class="closing-text">
+                    Unser Ziel ist es, Ihnen stets die bestmögliche Versorgung für Ihre Füße zu bieten und Ihnen bei der
+                    Erhaltung Ihrer Fußgesundheit zur Seite zu stehen. Zögern Sie nicht, uns bei Fragen oder zur
+                    Vereinbarung eines Termins zu kontaktieren.
+                </p>
+            </div>
+        </div>
+
+        <div id="kontakt" class="tab-content">
+            <h1>Kontakt</h1>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h3>Adresse</h3>
+                    <p>Ernst-Thälmann-Straße 75<br>99423 Weimar</p>
+                </div>
+
+                <div class="contact-item">
+                    <h3>Telefon</h3>
+                    <p><strong>Praxis:</strong> <a href="tel:036432123313">03643 2123313</a></p>
+                </div>
+
+                <div class="contact-item">
+                    <h3>Mobil</h3>
+                    <p><strong>Larisa:</strong> <a href="tel:01774532020">0177 453 2020</a></p>
+                    <p><strong>Vitalij:</strong> <a href="tel:015202317568">0152 023 17568</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 podologieweimar.de - Podologische Praxis Larisa & Vitalij Alekseev. Alle Rechte vorbehalten.
+            </p>
+            <p><a href="#impressum" class="impressum-link" id="impressum-link">Impressum</a></p>
+        </div>
+    </footer>
+
+    <!-- Impressum Modal -->
+    <div id="impressum-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Impressum</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <section class="impressum-section">
+                    <p><strong>Angaben gem. § 5 TMG:</strong></p>
+                    <p>Larisa, Alekseeva<br>
+                        Ernst-Thälmann-Straße 75<br>
+                        99423, Weimar</p>
+                </section>
+
+                <section class="impressum-section">
+                    <p><strong>Kontaktaufnahme:</strong></p>
+                    <p>Telefon: 03643 2123313<br>
+                        E-Mail: [E-Mail-Adresse]</p>
+                </section>
+
+                <section class="impressum-section">
+                    <p><strong>Umsatzsteuer-ID</strong></p>
+                    <p>Umsatzsteuer-Identifikationsnummer gem. § 27 a Umsatzsteuergesetz:<br>
+                        DE XXX XXX XXX</p>
+                </section>
+
+                <section class="impressum-section">
+                    <h3>Haftungsausschluss – Disclaimer:</h3>
+
+                    <h4>Haftung für Inhalte</h4>
+                    <p>Alle Inhalte unseres Internetauftritts wurden mit größter Sorgfalt und nach bestem Gewissen
+                        erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch
+                        keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf
+                        diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir als
+                        Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen
+                        zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen.
+                        Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen
+                        Gesetzen bleiben hiervon unberührt.</p>
+
+                    <p>Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntniserlangung einer
+                        konkreten Rechtsverletzung möglich. Bei Bekanntwerden von den o.g. Rechtsverletzungen werden wir
+                        diese Inhalte unverzüglich entfernen.</p>
+
+                    <h4>Haftungsbeschränkung für externe Links</h4>
+                    <p>Unsere Webseite enthält Links auf externe Webseiten Dritter. Auf die Inhalte dieser direkt oder
+                        indirekt verlinkten Webseiten haben wir keinen Einfluss. Daher können wir für die „externen
+                        Links" auch keine Gewähr auf Richtigkeit der Inhalte übernehmen. Für die Inhalte der externen
+                        Links sind die jeweilige Anbieter oder Betreiber (Urheber) der Seiten verantwortlich.</p>
+
+                    <p>Die externen Links wurden zum Zeitpunkt der Linksetzung auf eventuelle Rechtsverstöße überprüft
+                        und waren im Zeitpunkt der Linksetzung frei von rechtswidrigen Inhalten. Eine ständige
+                        inhaltliche Überprüfung der externen Links ist ohne konkrete Anhaltspunkte einer
+                        Rechtsverletzung nicht möglich. Bei direkten oder indirekten Verlinkungen auf die Webseiten
+                        Dritter, die außerhalb unseres Verantwortungsbereichs liegen, würde eine Haftungsverpflichtung
+                        ausschließlich in dem Fall nur bestehen, wenn wir von den Inhalten Kenntnis erlangen und es uns
+                        technisch möglich und zumutbar wäre, die Nutzung im Falle rechtswidriger Inhalte zu verhindern.
+                    </p>
+
+                    <p>Diese Haftungsausschlusserklärung gilt auch innerhalb des eigenen Internetauftrittes gesetzten
+                        Links und Verweise von Fragestellern, Blogeinträgern, Gästen des Diskussionsforums. Für
+                        illegale, fehlerhafte oder unvollständige Inhalte und insbesondere für Schäden, die aus der
+                        Nutzung oder Nichtnutzung solcherart dargestellten Informationen entstehen, haftet allein der
+                        Diensteanbieter der Seite, auf welche verwiesen wurde, nicht derjenige, der über Links auf die
+                        jeweilige Veröffentlichung lediglich verweist.</p>
+
+                    <p>Werden uns Rechtsverletzungen bekannt, werden die externen Links durch uns unverzüglich entfernt.
+                    </p>
+
+                    <h4>Urheberrecht</h4>
+                    <p>Die auf unserer Webseite veröffentlichen Inhalte und Werke unterliegen dem deutschen
+                        Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung des
+                        geistigen Eigentums in ideeller und materieller Sicht des Urhebers außerhalb der Grenzen des
+                        Urheberrechtes bedürfen der vorherigen schriftlichen Zustimmung des jeweiligen Urhebers i.S.d.
+                        Urhebergesetzes. Downloads und Kopien dieser Seite sind nur für den privaten und nicht
+                        kommerziellen Gebrauch erlaubt. Sind die Inhalte auf unserer Webseite nicht von uns erstellt
+                        wurden, sind die Urheberrechte Dritter zu beachten. Die Inhalte Dritter werden als solche
+                        kenntlich gemacht. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden,
+                        bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir
+                        derartige Inhalte unverzüglich entfernen.</p>
+
+                    <p><em>Dieses Impressum wurde freundlicherweise von jurarat.de zur Verfügung gestellt.</em></p>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab navigation functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const impressumLink = document.getElementById('impressum-link');
+            const impressumModal = document.getElementById('impressum-modal');
+            const closeModal = document.querySelector('.close');
+
+            // Tab navigation
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Remove active class from all nav links and tab contents
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked link
+                    this.classList.add('active');
+
+                    // Show corresponding tab content
+                    const targetId = this.getAttribute('href').substring(1);
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // Impressum modal functionality
+            impressumLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                impressumModal.style.display = 'block';
+            });
+
+            closeModal.addEventListener('click', function () {
+                impressumModal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside of it
+            window.addEventListener('click', function (e) {
+                if (e.target === impressumModal) {
+                    impressumModal.style.display = 'none';
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && impressumModal.style.display === 'block') {
+                    impressumModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
